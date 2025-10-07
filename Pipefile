@@ -1,0 +1,33 @@
+pipeline{
+    agent any
+      parameters{
+        choice(name:'ENVIRONMENT',choices:['testing','prod'],description:'Environment name')
+    }
+    stages{
+        stage('git clone'){
+            steps{
+                git 'https://github.com/dhanalkshmi/CloneRepo.git'
+            }
+        }
+        stage('list'){
+            steps{
+                bat 'dir'
+            }
+        }
+         stage('build'){
+             when{
+                 expression{
+                     params.ENVIRONMENT=='Testing'
+                 }
+             }
+            steps{
+                 bat 'javac -d . src/org/onlineclass/PrintNumbers.java'
+            }
+        }
+         stage('Run') {
+            steps {
+                bat 'java org.onlineclass.PrintNumbers'
+            }
+        }
+    }
+}
